@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Mesa Pantográfica</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.1/lucide.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <div class="header-title">
+                    <i data-lucide="calculator" class="header-icon"></i>
+                    <h1>Calculadora de Mesa Pantográfica</h1>
+                </div>
+                <p class="header-subtitle">Ferramenta para dimensionamento e análise de mesas pantográficas</p>
+            </div>
+        </header>
+
+        <!-- Navigation Tabs -->
+        <nav class="tabs-nav">
+            <button class="tab-button active" data-tab="calculator">
+                <i data-lucide="calculator"></i>
+                Calculadora
+            </button>
+            <button class="tab-button" data-tab="visualization">
+                <i data-lucide="eye"></i>
+                Visualização 2D
+            </button>
+            <button class="tab-button" data-tab="graphs">
+                <i data-lucide="bar-chart-3"></i>
+                Gráficos
+            </button>
+            <button class="tab-button" data-tab="info">
+                <i data-lucide="info"></i>
+                Informações
+            </button>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Calculator Tab -->
+            <div class="tab-content active" id="calculator-tab">
+                <!-- Validation Alerts -->
+                <div id="validation-alerts" class="alerts-container"></div>
+
+                <div class="content-grid">
+                    <!-- Input Parameters Card -->
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">
+                                <i data-lucide="settings"></i>
+                                Parâmetros de Entrada
+                            </div>
+                            <p class="card-description">Configure as especificações da mesa pantográfica</p>
+                        </div>
+                        <div class="card-content">
+                            <div class="input-grid">
+                                <div class="input-group">
+                                    <label for="carga">Carga Máxima (kg)</label>
+                                    <input type="number" id="carga" value="8" step="0.1">
+                                </div>
+                                <div class="input-group">
+                                    <label for="movimentoVertical">Movimento Vertical (mm)</label>
+                                    <input type="number" id="movimentoVertical" value="150" step="1">
+                                </div>
+                                <div class="input-group">
+                                    <label for="largura">Largura da Plataforma (mm)</label>
+                                    <input type="number" id="largura" value="200" step="1">
+                                </div>
+                                <div class="input-group">
+                                    <label for="profundidade">Profundidade da Plataforma (mm)</label>
+                                    <input type="number" id="profundidade" value="200" step="1">
+                                </div>
+                                <div class="input-group">
+                                    <label for="alturaMinima">Altura Mínima (mm)</label>
+                                    <input type="number" id="alturaMinima" value="50" step="1">
+                                </div>
+                                <div class="input-group">
+                                    <label for="anguloMaximo">Ângulo Máximo (graus)</label>
+                                    <input type="number" id="anguloMaximo" value="60" step="1">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Results Card -->
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">Resultados dos Cálculos</div>
+                            <p class="card-description">Dimensionamento e forças calculadas</p>
+                        </div>
+                        <div class="card-content">
+                            <div class="results-grid">
+                                <div class="result-item blue">
+                                    <label>Comprimento da Haste</label>
+                                    <span id="result-L">115.5 mm</span>
+                                </div>
+                                <div class="result-item green">
+                                    <label>Ângulo Mínimo</label>
+                                    <span id="result-theta-min">12.5°</span>
+                                </div>
+                            </div>
+                            
+                            <div class="results-list">
+                                <div class="result-row orange">
+                                    <span>Força no Atuador (mín)</span>
+                                    <span class="badge" id="result-f-atuador-min">180.5 N</span>
+                                </div>
+                                <div class="result-row orange">
+                                    <span>Força no Atuador (máx)</span>
+                                    <span class="badge" id="result-f-atuador-max">22.6 N</span>
+                                </div>
+                                <div class="result-row purple">
+                                    <span>Força na Haste (máx)</span>
+                                    <span class="badge" id="result-f-haste-min">181.7 N</span>
+                                </div>
+                                <div class="result-row red">
+                                    <span>Fator de Segurança (Flambagem)</span>
+                                    <span class="badge" id="result-fs-flambagem">15x</span>
+                                </div>
+                                <div class="result-row indigo">
+                                    <span>Torque no Fuso</span>
+                                    <span class="badge" id="result-torque">32.5 mNm</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Visualization Tab -->
+            <div class="tab-content" id="visualization-tab">
+                <div class="content-grid">
+                    <!-- 2D Diagram Card -->
+                    <div class="card full-width">
+                        <div class="card-header">
+                            <div class="card-title">
+                                <i data-lucide="eye"></i>
+                                Visualização 2D do Mecanismo
+                            </div>
+                            <p class="card-description">Representação esquemática da mesa pantográfica com as dimensões calculadas</p>
+                        </div>
+                        <div class="card-content">
+                            <canvas id="diagram-canvas" width="800" height="400"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Visualization Controls -->
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">Controles de Visualização</div>
+                            <p class="card-description">Ajuste os parâmetros para ver o comportamento do mecanismo</p>
+                        </div>
+                        <div class="card-content">
+                            <div class="input-group">
+                                <label for="visualTheta">Ângulo de Visualização (graus)</label>
+                                <input type="range" id="visualTheta" min="10" max="60" value="12.5" step="0.5">
+                                <div class="range-labels">
+                                    <span>Mín: <span id="theta-min-label">12.5°</span></span>
+                                    <span>Máx: <span id="theta-max-label">60°</span></span>
+                                </div>
+                            </div>
+                            
+                            <div class="angle-info">
+                                <h4>Informações do Ângulo Atual:</h4>
+                                <div class="info-grid">
+                                    <div class="info-item blue">
+                                        <span>Altura:</span>
+                                        <span id="current-height">50.0 mm</span>
+                                    </div>
+                                    <div class="info-item green">
+                                        <span>Largura Base:</span>
+                                        <span id="current-width">225.4 mm</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Technical Information -->
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">Componentes do Mecanismo</div>
+                            <p class="card-description">Detalhes dos elementos mostrados no diagrama</p>
+                        </div>
+                        <div class="card-content">
+                            <div class="components-list">
+                                <div class="component-item">
+                                    <div class="component-color green"></div>
+                                    <div>
+                                        <span class="component-name">Hastes Principais</span>
+                                        <p class="component-desc">Barras de aço que formam o mecanismo pantográfico</p>
+                                    </div>
+                                </div>
+                                <div class="component-item">
+                                    <div class="component-color blue"></div>
+                                    <div>
+                                        <span class="component-name">Plataforma</span>
+                                        <p class="component-desc">Superfície de trabalho que se move verticalmente</p>
+                                    </div>
+                                </div>
+                                <div class="component-item">
+                                    <div class="component-color red"></div>
+                                    <div>
+                                        <span class="component-name">Atuadores</span>
+                                        <p class="component-desc">Fusos responsáveis pelo movimento vertical</p>
+                                    </div>
+                                </div>
+                                <div class="component-item">
+                                    <div class="component-color gray"></div>
+                                    <div>
+                                        <span class="component-name">Base Fixa</span>
+                                        <p class="component-desc">Estrutura de apoio do mecanismo</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Graphs Tab -->
+            <div class="tab-content" id="graphs-tab">
+                <div class="content-grid">
+                    <div class="card full-width">
+                        <div class="card-header">
+                            <div class="card-title">
+                                <i data-lucide="bar-chart-3"></i>
+                                Análise de Forças vs Altura
+                            </div>
+                            <p class="card-description">Variação das forças em função da altura da mesa</p>
+                        </div>
+                        <div class="card-content">
+                            <canvas id="forces-chart" width="800" height="400"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">Eficiência Mecânica</div>
+                            <p class="card-description">Eficiência do mecanismo em diferentes alturas</p>
+                        </div>
+                        <div class="card-content">
+                            <canvas id="efficiency-chart" width="400" height="300"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">Geometria do Mecanismo</div>
+                            <p class="card-description">Variação das dimensões geométricas</p>
+                        </div>
+                        <div class="card-content">
+                            <canvas id="geometry-chart" width="400" height="300"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Info Tab -->
+            <div class="tab-content" id="info-tab">
+                <div class="content-grid">
+                    <div class="card full-width">
+                        <div class="card-header">
+                            <div class="card-title">
+                                <i data-lucide="info"></i>
+                                Sobre a Mesa Pantográfica
+                            </div>
+                        </div>
+                        <div class="card-content">
+                            <div class="info-content">
+                                <h3>Princípio de Funcionamento</h3>
+                                <p>A mesa pantográfica é um mecanismo que utiliza um sistema de hastes articuladas para proporcionar movimento vertical controlado. O sistema é baseado no princípio do pantógrafo, onde as hastes formam um paralelogramo articulado que mantém a plataforma sempre paralela à base.</p>
+
+                                <h3>Componentes Principais</h3>
+                                <ul>
+                                    <li><strong>Hastes Principais:</strong> Barras de aço que formam a estrutura do mecanismo</li>
+                                    <li><strong>Atuadores:</strong> Fusos responsáveis pelo movimento vertical</li>
+                                    <li><strong>Plataforma:</strong> Superfície de trabalho móvel</li>
+                                    <li><strong>Base:</strong> Estrutura fixa de apoio</li>
+                                </ul>
+
+                                <h3>Cálculos Realizados</h3>
+                                <ul>
+                                    <li><strong>Dimensionamento Geométrico:</strong> Comprimento das hastes baseado na altura máxima e ângulo máximo</li>
+                                    <li><strong>Análise de Forças:</strong> Forças nos atuadores e hastes em diferentes posições</li>
+                                    <li><strong>Verificação de Flambagem:</strong> Fator de segurança contra instabilidade das hastes</li>
+                                    <li><strong>Dimensionamento do Fuso:</strong> Torque necessário para o acionamento</li>
+                                </ul>
+
+                                <h3>Considerações de Projeto</h3>
+                                <ul>
+                                    <li>Fator de segurança mínimo de 3 para flambagem</li>
+                                    <li>Material das hastes: Aço ASTM A36</li>
+                                    <li>Seção das hastes: Barra chata 20x3mm</li>
+                                    <li>Fuso: M10 com passo de 2mm</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <script src="calculations.js"></script>
+    <script src="diagram.js"></script>
+    <script src="charts.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
+
