@@ -2,6 +2,9 @@
 
 Este projeto apresenta uma aplicação web completa e interativa para o dimensionamento e análise de mesas pantográficas. Desenvolvida com uma combinação robusta de tecnologias frontend e backend, a ferramenta permite que engenheiros, designers e entusiastas calculem parâmetros críticos, visualizem o mecanismo em 2D e analisem o desempenho de forma intuitiva.
 
+![Imagem de Propaganda](https://github.com/Gustavo-de-Lima-G-000-Akiko-Yuuuki/mesa-pantografica-web/blob/main/Capturar.PNG?raw=true
+)
+
 ## 📋 Sobre o Projeto
 
 A Calculadora de Mesa Pantográfica é uma solução de engenharia que simplifica o processo de projeto, oferecendo funcionalidades para:
